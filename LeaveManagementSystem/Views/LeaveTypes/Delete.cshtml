@@ -1,4 +1,4 @@
-﻿@model LeaveManagementSystem.Data.LeaveType
+﻿@model LeaveTypeReadOnlyVM
 
 @{
     ViewData["Title"] = "Delete Leave Type";
@@ -11,10 +11,10 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LeaveTypeName)
+            @Html.DisplayNameFor(model => model.Name)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LeaveTypeName)
+            @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.NumberOfDays)
@@ -25,7 +25,7 @@
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="LeaveTypeID" />
+        <input type="hidden" asp-for="ID" />
         <input type="submit" value="Delete" class="btn btn-danger" />
         <a asp-action="Index" class="btn btn-primary">Back to List</a>
     </form>

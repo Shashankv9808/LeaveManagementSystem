@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using LeaveManagementSystem.Data;
+using LeaveManagementSystem.Models.LeaveTypes;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using LeaveManagementSystem.Data;
 
 namespace LeaveManagementSystem.Controllers
 {
@@ -21,7 +17,14 @@ namespace LeaveManagementSystem.Controllers
         // GET: LeaveTypes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.LeaveTypes.ToListAsync());
+            var leaveTypeDM = await _context.LeaveTypes.ToListAsync();
+            var leaveTypeROVM = leaveTypeDM.Select(x => new LeaveTypeReadOnlyVM
+            {
+                ID = x.LeaveTypeID,
+                Name = x.LeaveTypeName,
+                NumberOfDays = x.NumberOfDays
+            });
+            return View(leaveTypeROVM);
         }
 
         // GET: LeaveTypes/Details/5
@@ -32,14 +35,19 @@ namespace LeaveManagementSystem.Controllers
                 return NotFound();
             }
 
-            var leaveType = await _context.LeaveTypes
+            var leaveTypeDM = await _context.LeaveTypes
                 .FirstOrDefaultAsync(m => m.LeaveTypeID == id);
-            if (leaveType == null)
+            if (leaveTypeDM == null)
             {
                 return NotFound();
             }
-
-            return View(leaveType);
+            var leaveTypeROVM = new LeaveTypeReadOnlyVM
+            {
+                ID = leaveTypeDM.LeaveTypeID,
+                Name = leaveTypeDM.LeaveTypeName,
+                NumberOfDays = leaveTypeDM.NumberOfDays
+            };
+            return View(leaveTypeROVM);
         }
 
         // GET: LeaveTypes/Create
@@ -53,15 +61,20 @@ namespace LeaveManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("LeaveTypeID,LeaveTypeName,NumberOfDays")] LeaveType leaveType)
+        public async Task<IActionResult> Create(LeaveTypeCreateVM leaveTypeVM)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(leaveType);
+                var leaveTypeDM = new LeaveType
+                {
+                    LeaveTypeName = leaveTypeVM.Name,
+                    NumberOfDays = leaveTypeVM.Days
+                };
+                _context.Add(leaveTypeDM);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(leaveType);
+            return View(leaveTypeVM);
         }
 
         // GET: LeaveTypes/Edit/5
@@ -72,12 +85,18 @@ namespace LeaveManagementSystem.Controllers
                 return NotFound();
             }
 
-            var leaveType = await _context.LeaveTypes.FindAsync(id);
-            if (leaveType == null)
+            var leaveTypeDM = await _context.LeaveTypes.FindAsync(id);
+            if (leaveTypeDM == null)
             {
                 return NotFound();
             }
-            return View(leaveType);
+            var leaveTypeVM = new LeaveTypeEditVM
+            {
+                ID = leaveTypeDM.LeaveTypeID,
+                Name = leaveTypeDM.LeaveTypeName,
+                Days = leaveTypeDM.NumberOfDays
+            };
+            return View(leaveTypeVM);
         }
 
         // POST: LeaveTypes/Edit/5
@@ -85,9 +104,9 @@ namespace LeaveManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("LeaveTypeID,LeaveTypeName,NumberOfDays")] LeaveType leaveType)
+        public async Task<IActionResult> Edit(int id, LeaveTypeEditVM leaveTypeVM)
         {
-            if (id != leaveType.LeaveTypeID)
+            if (id != leaveTypeVM.ID)
             {
                 return NotFound();
             }
@@ -96,12 +115,18 @@ namespace LeaveManagementSystem.Controllers
             {
                 try
                 {
-                    _context.Update(leaveType);
+                    var leaveTypeDM = new LeaveType
+                    {
+                        LeaveTypeID = leaveTypeVM.ID,
+                        LeaveTypeName = leaveTypeVM.Name,
+                        NumberOfDays = leaveTypeVM.Days
+                    };
+                    _context.Update(leaveTypeDM);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!LeaveTypeExists(leaveType.LeaveTypeID))
+                    if (!LeaveTypeExists(leaveTypeVM.ID))
                     {
                         return NotFound();
                     }
@@ -112,7 +137,7 @@ namespace LeaveManagementSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(leaveType);
+            return View(leaveTypeVM);
         }
 
         // GET: LeaveTypes/Delete/5
@@ -123,14 +148,19 @@ namespace LeaveManagementSystem.Controllers
                 return NotFound();
             }
 
-            var leaveType = await _context.LeaveTypes
+            var leaveTypeDM = await _context.LeaveTypes
                 .FirstOrDefaultAsync(m => m.LeaveTypeID == id);
-            if (leaveType == null)
+            if (leaveTypeDM == null)
             {
                 return NotFound();
             }
-
-            return View(leaveType);
+            var leaveTypeVM = new LeaveTypeReadOnlyVM
+            {
+                ID = leaveTypeDM.LeaveTypeID,
+                Name = leaveTypeDM.LeaveTypeName,
+                NumberOfDays = leaveTypeDM.NumberOfDays
+            };
+            return View(leaveTypeVM);
         }
 
         // POST: LeaveTypes/Delete/5

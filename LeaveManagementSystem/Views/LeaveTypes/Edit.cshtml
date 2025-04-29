@@ -1,26 +1,26 @@
-﻿@model LeaveManagementSystem.Data.LeaveType
+﻿@model LeaveTypeEditVM
 
 @{
     ViewData["Title"] = "Edit Leave Type";
 }
 
-<h1>Edit Leave Type for @Model.LeaveTypeName</h1>
+<h1>Edit Leave Type for @Model.Name</h1>
 <hr />
 <div class="row">
     <div class="col-md-5">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="LeaveTypeID" />
+            <input type="hidden" asp-for="ID" />
             <div class="form-group">
-                <label asp-for="LeaveTypeName" class="control-label"></label>
-                <input asp-for="LeaveTypeName" class="form-control" />
-                <span asp-validation-for="LeaveTypeName" class="text-danger"></span>
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <br />
             <div class="form-group">
-                <label asp-for="NumberOfDays" class="control-label"></label>
-                <input asp-for="NumberOfDays" class="form-control" />
-                <span asp-validation-for="NumberOfDays" class="text-danger"></span>
+                <label asp-for="Days" class="control-label"></label>
+                <input asp-for="Days" class="form-control" />
+                <span asp-validation-for="Days" class="text-danger"></span>
             </div>
             <br />
             <div class="form-group">

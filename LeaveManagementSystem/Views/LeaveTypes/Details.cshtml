@@ -1,19 +1,19 @@
-﻿@model LeaveManagementSystem.Data.LeaveType
+﻿@model LeaveTypeReadOnlyVM
 
 @{
-    ViewData["Title"] = $"{Model.LeaveTypeName} Details";
+    ViewData["Title"] = $"{Model.Name} Details";
 }
 
-<h1>Leave Type Details for @Model.LeaveTypeName</h1>
+<h1>Leave Type Details for @Model.Name</h1>
 
 <div>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LeaveTypeName)
+            @Html.DisplayNameFor(model => model.Name)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LeaveTypeName)
+            @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.NumberOfDays)
@@ -24,6 +24,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.LeaveTypeID" class="btn btn-warning">Edit</a>
+    <a asp-action="Edit" asp-route-id="@Model?.ID" class="btn btn-warning">Edit</a>
     <a asp-action="Index" class="btn btn-primary">Back to List</a>
 </div>
