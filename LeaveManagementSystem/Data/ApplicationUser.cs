@@ -1,0 +1,12 @@
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Build.Framework;
+
+namespace LeaveManagementSystem.Data
+{
+    public class ApplicationUser : IdentityUser
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateOnly DateOfBirth { get; set; }
+    }
+}
