@@ -1,4 +1,5 @@
-﻿global using LeaveManagementSystem.Data;
+﻿global using LeaveManagementSystem.Common;
+global using LeaveManagementSystem.Data;
 global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.AspNetCore.Identity.UI.Services;

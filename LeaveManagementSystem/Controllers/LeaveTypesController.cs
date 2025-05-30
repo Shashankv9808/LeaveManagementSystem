@@ -1,10 +1,11 @@
 ﻿using LeaveManagementSystem.Models.LeaveTypes;
 using LeaveManagementSystem.Services;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeaveManagementSystem.Controllers
 {
+    [Authorize(Roles = Roles.Administrator)]
     public class LeaveTypesController : Controller
     {
         private readonly ILeaveTypesServices _leaveTypesServices;
