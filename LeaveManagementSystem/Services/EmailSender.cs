@@ -6,7 +6,7 @@ namespace LeaveManagementSystem.Services
     {
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            var fromAddress=_configuration["EmailSettings:DefaultEmailAddress"];
+            var fromAddress = _configuration["EmailSettings:DefaultEmailAddress"];
             var smtpServer = _configuration["EmailSettings:Server"];
             var smtpPort = Convert.ToInt32(_configuration["EmailSettings:Port"]);
             var message = new MailMessage
@@ -18,7 +18,9 @@ namespace LeaveManagementSystem.Services
             };
             message.To.Add(new MailAddress(email));
             using var client = new SmtpClient(smtpServer, smtpPort);
-            client.SendMailAsync(message).GetAwaiter().GetResult();
+
+            // Fix: Use await to asynchronously send the email
+            await client.SendMailAsync(message);
         }
     }
 }

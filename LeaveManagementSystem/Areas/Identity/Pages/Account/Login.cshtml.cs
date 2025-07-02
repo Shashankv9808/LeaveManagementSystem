@@ -14,11 +14,13 @@ namespace LeaveManagementSystem.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, UserManager<ApplicationUser> userManager)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -118,6 +120,21 @@ namespace LeaveManagementSystem.Areas.Identity.Pages.Account
                 {
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
+                }
+                if(result.IsNotAllowed)
+                {
+                    var user = await _userManager.FindByEmailAsync(Input.Email);
+                    if (user != null && !user.EmailConfirmed)
+                    {
+                        // If the user exists but email is not confirmed, prompt for confirmation
+                        ModelState.AddModelError(string.Empty, "Email not confirmed. Please check your email for confirmation link.");
+                        return RedirectToPage("./ResendEmailConfirmation", new { email = Input.Email });
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        return Page();
+                    }
                 }
                 else
                 {

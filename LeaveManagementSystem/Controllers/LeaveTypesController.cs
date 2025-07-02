@@ -22,7 +22,7 @@ namespace LeaveManagementSystem.Controllers
             return View(await _leaveTypesServices.GetAllAsync());
         }
 
-        // GET: LeaveTypes/Details/5
+        // GET: LeaveTypes/Details/5    
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -139,7 +139,5 @@ namespace LeaveManagementSystem.Controllers
             await _leaveTypesServices.Remove(id);
             return RedirectToAction(nameof(Index));
         }
-
-
     }
 }
