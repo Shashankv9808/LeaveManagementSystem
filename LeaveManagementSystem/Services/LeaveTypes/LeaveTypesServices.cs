@@ -1,8 +1,7 @@
-﻿using LeaveManagementSystem.Data;
-using LeaveManagementSystem.Models.LeaveTypes;
+﻿using LeaveManagementSystem.Models.LeaveTypes;
 using Microsoft.EntityFrameworkCore;
 
-namespace LeaveManagementSystem.Services;
+namespace LeaveManagementSystem.Services.LeaveTypes;
 
 public class LeaveTypesServices : ILeaveTypesServices
 {
@@ -97,5 +96,14 @@ public class LeaveTypesServices : ILeaveTypesServices
     public async Task<bool> CheckIfLeaveTypeNameExistsForEdit(LeaveTypeEditVM leaveTypeVM)
     {
         return await _context.LeaveTypes.AnyAsync(e => e.LeaveTypeName.ToLower().Equals(leaveTypeVM.Name.ToLower()) && leaveTypeVM.ID != e.LeaveTypeID);
+    }
+    public async Task<bool> DaysExceedMaximum(int leaveTypeId, int days)
+    {
+        var leaveType = await _context.LeaveTypes.FindAsync(leaveTypeId);
+        if (leaveType == null)
+        {
+            return false; // Leave type not found
+        }
+        return days > leaveType.NumberOfDays;
     }
 }

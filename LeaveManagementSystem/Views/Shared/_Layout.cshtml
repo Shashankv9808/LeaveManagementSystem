@@ -26,11 +26,22 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         @if (User.IsInRole(Roles.Administrator))
-						{
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="LeaveTypes" asp-action="Index">LeaveTypes</a>
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Management</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item text-dark" asp-controller="LeaveTypes" asp-action="Index">Leave Types</a></li>
+                                    <li><a class="dropdown-item text-dark" asp-controller="Periods" asp-action="Index">Periods</a></li>
+                                    <li><a class="dropdown-item text-dark" asp-controller="LeaveAllocations" asp-action="Index">Employee</a></li>
+                                </ul>
                             </li>
-						}
+                        }
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="LeaveAllocations" asp-action="Details">View Allocations</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

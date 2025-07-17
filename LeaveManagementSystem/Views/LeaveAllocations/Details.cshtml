@@ -1,0 +1,88 @@
+﻿@model EmployeeLeaveAllocationVM
+@{
+	ViewData["Title"] = "Leave Allocations Details";
+	var issAdmin = User.IsInRole(Roles.Administrator);
+	string message = issAdmin ? "There are no allocations" : "No data found for this employee.Please contact admin.";
+}
+
+<h1 class="mb-4">View Allocations for @Model.FirstName @Model.LastName</h1>
+@if(issAdmin)
+{
+	<a asp-action="Index" class="btn btn-primary">Back to list</a>
+	<br />
+}
+<hr/>
+<div class="mb-4">
+	<dl class="row">
+		<dt class="col-sm-3">@Html.DisplayNameFor(model => model.FirstName)</dt>
+		<dd class="col-sm-9">@Html.DisplayFor(model => model.FirstName)</dd>
+		<dt class="col-sm-3">@Html.DisplayNameFor(model => model.LastName)</dt>
+		<dd class="col-sm-9">@Html.DisplayFor(model => model.LastName)</dd>
+		<dt class="col-sm-3">@Html.DisplayNameFor(model => model.Email)</dt>
+		<dd class="col-sm-9">@Html.DisplayFor(model => model.Email)</dd>
+		<dt class="col-sm-3">@Html.DisplayNameFor(model => model.DateOfBirth)</dt>
+		<dd class="col-sm-9">@Html.DisplayFor(model => model.DateOfBirth)</dd>
+	</dl>
+</div>
+@if(issAdmin && !Model.IsCompletedAllocation)
+{
+	<div class="alert alert-warning" role="alert">
+		<h4 class="alert-heading">Leave Allocation Pending</h4>
+		<p>Leave allocation for this employee is not yet completed. Please allocate leave to proceed.</p>
+		<p class="mb-0">You can allocate leave by clicking the button below.</p>
+	</div>
+	<div class="mb-4">
+        <form asp-controller="LeaveAllocations" asp-action="AllocateLeave" method="post">
+            <input type="hidden" asp-for="@Model.EmployeeId" />
+            <button type="submit" class="btn btn-warning">Allocate leave</button>
+        </form>
+	</div>
+}
+<hr />
+@if (Model.LeaveAllocations.Any())
+{
+	<div class="card shadow-sm mx-auto" style="max-width: 700px;">
+		<div class="card-header bg-primary text-white">
+			<h4 class="mb-0">Leave Allocations</h4>
+		</div>
+		<div class="table-responsive">
+			<table class="table table-striped mb-0">
+				<thead class="table-light">
+					<tr>
+						<th>Leave Name</th>
+						<th>Original Allocations</th>
+						<th>Current Allocations</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var item in Model.LeaveAllocations)
+					{
+						<tr>
+							<td>@item.LeaveType.Name</td>
+							<td>
+								<span class="badge bg-secondary">@item.LeaveType.NumberOfDays</span>
+							</td>
+							<td>
+								<span class="badge bg-success">@item.NumberOfDays</span>
+							</td>
+							<td>
+								@if(issAdmin)
+								{
+									<a asp-controller="LeaveAllocations" asp-action="EditAllocation" asp-route-id="@item.LeaveAllocationId" class="btn btn-outline-primary btn-sm">Edits</a>
+								}
+								<a asp-controller="LeaveRequest" asp-action="Create" class="btn btn-outline-success btn-sm">
+									Request Leave
+								</a>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+}
+else
+{
+<div class="alert alert-danger" role="alert"><h2>@message</h2></div>
+}

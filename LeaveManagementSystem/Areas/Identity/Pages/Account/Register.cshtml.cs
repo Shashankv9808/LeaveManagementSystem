@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using LeaveManagementSystem.Services.LeaveAllocations;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeaveManagementSystem.Areas.Identity.Pages.Account
@@ -9,6 +10,7 @@ namespace LeaveManagementSystem.Areas.Identity.Pages.Account
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ILeaveAllocationsServices _leaveAllocationsService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUserStore<ApplicationUser> _userStore;
@@ -17,6 +19,7 @@ namespace LeaveManagementSystem.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
+            ILeaveAllocationsServices leaveAllocationsServices,
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
@@ -24,6 +27,7 @@ namespace LeaveManagementSystem.Areas.Identity.Pages.Account
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
+            _leaveAllocationsService = leaveAllocationsServices;
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
@@ -153,6 +157,7 @@ namespace LeaveManagementSystem.Areas.Identity.Pages.Account
                         }
                     }
                     var userId = await _userManager.GetUserIdAsync(user);
+                    await _leaveAllocationsService.AllocationLeave(userId);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
