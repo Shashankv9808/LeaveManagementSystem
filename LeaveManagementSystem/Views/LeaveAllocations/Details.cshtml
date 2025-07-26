@@ -1,14 +1,20 @@
 ﻿@model EmployeeLeaveAllocationVM
 @{
 	ViewData["Title"] = "Leave Allocations Details";
-	var issAdmin = User.IsInRole(Roles.Administrator);
-	string message = issAdmin ? "There are no allocations" : "No data found for this employee.Please contact admin.";
+	var isAdmin = User.IsInRole(Roles.Administrator);
+	var isEmployee = User.IsInRole(Roles.Employee);
+	string message = isAdmin ? "There are no allocations" : "No data found for this employee.Please contact admin.";
 }
 
 <h1 class="mb-4">View Allocations for @Model.FirstName @Model.LastName</h1>
-@if(issAdmin)
+@if (isAdmin)
 {
 	<a asp-action="Index" class="btn btn-primary">Back to list</a>
+	<br />
+}
+@if (isEmployee)
+{
+	<a asp-controller="LeaveRequest" asp-action="Index" class="btn btn-primary">View Request History</a>
 	<br />
 }
 <hr/>
@@ -24,7 +30,7 @@
 		<dd class="col-sm-9">@Html.DisplayFor(model => model.DateOfBirth)</dd>
 	</dl>
 </div>
-@if(issAdmin && !Model.IsCompletedAllocation)
+@if (isAdmin && !Model.IsCompletedAllocation)
 {
 	<div class="alert alert-warning" role="alert">
 		<h4 class="alert-heading">Leave Allocation Pending</h4>
@@ -67,7 +73,7 @@
 								<span class="badge bg-success">@item.NumberOfDays</span>
 							</td>
 							<td>
-								@if(issAdmin)
+								@if (isAdmin)
 								{
 									<a asp-controller="LeaveAllocations" asp-action="EditAllocation" asp-route-id="@item.LeaveAllocationId" class="btn btn-outline-primary btn-sm">Edits</a>
 								}

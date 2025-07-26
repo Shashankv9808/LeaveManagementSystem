@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LeaveManagementSystem.Models.LeaveAllocations;
+using LeaveManagementSystem.Models.LeaveRequests;
 using LeaveManagementSystem.Services.UserManager;
 using Microsoft.EntityFrameworkCore;
 
@@ -54,8 +55,13 @@ namespace LeaveManagementSystem.Services.LeaveAllocations
             //the save cahnges are mandate for option 1 and 2
             //await _context.SaveChangesAsync();
 
+            //var data = await _context.LeaveAllocations.Where(e => e.LeaveAllocationId == 2).FirstOrDefaultAsync();
+            //if(data == null)
+            //    throw new ArgumentNullException("Leave allocation not found.");
+            //if(data.LeaveType.NumberOfDays <= (data.NumberOfDays + allocationEditVM.NumberOfDays))
+            //    throw new ArgumentException("The number of days exceeds the maximum allowed for this leave type.");
             await _context.LeaveAllocations
-                .Where(e => e.LeaveAllocationId == allocationEditVM.LeaveAllocationId && e.LeaveType.NumberOfDays <= (e.NumberOfDays + allocationEditVM.NumberOfDays))
+                .Where(e => e.LeaveAllocationId == allocationEditVM.LeaveAllocationId && e.LeaveType.NumberOfDays >= allocationEditVM.NumberOfDays)
                 .ExecuteUpdateAsync(s => s.SetProperty(e => e.NumberOfDays, allocationEditVM.NumberOfDays));
         }
 

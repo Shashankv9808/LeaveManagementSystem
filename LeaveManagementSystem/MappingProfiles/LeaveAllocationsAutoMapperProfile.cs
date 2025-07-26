@@ -16,9 +16,6 @@ namespace LeaveManagementSystem.MappingProfiles
 
             CreateMap<LeaveAllocation, LeaveAllocationVM>()
                 .ForMember(dest => dest.LeaveType, opt => opt.MapFrom(src => src.LeaveType));
-            CreateMap<LeaveType, LeaveTypeReadOnlyVM>()
-                .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.LeaveTypeID))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.LeaveTypeName));
             CreateMap<Period, PeriodVM>();
             CreateMap<ApplicationUser, EmployeeListVM>()
                 .ForMember(dest => dest.EmployeeId, opt=> opt.MapFrom(src => src.Id));
