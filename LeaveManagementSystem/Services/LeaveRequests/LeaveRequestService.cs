@@ -1,5 +1,6 @@
 ﻿
 using AutoMapper;
+using LeaveManagementSystem.Models.LeaveAllocations;
 using LeaveManagementSystem.Models.LeaveRequests;
 using LeaveManagementSystem.Services.UserManager;
 using Microsoft.EntityFrameworkCore;
@@ -53,9 +54,29 @@ namespace LeaveManagementSystem.Services.LeaveRequests
 
         }
 
-        Task<EmployeeLeaveRequestListVM> ILeaveRequestService.AdminGetAllLeaveRequests()
+        async Task<EmployeeLeaveRequestListVM> ILeaveRequestService.AdminGetAllLeaveRequests()
         {
-            throw new NotImplementedException();
+            var leaveRequests = await _context.LeaveRequests
+                .Include(q => q.LeaveType)
+                .ToListAsync();
+            var leaveRequestModel = leaveRequests.Select(leaveRequest => new LeaveReqestReadOnlyVM
+            {
+                LeaveRequestID = leaveRequest.LeaveRequestID,
+                StartDate = leaveRequest.StartDate,
+                EndDate = leaveRequest.EndDate,
+                LeaveType = leaveRequest.LeaveType.LeaveTypeName,
+                LeaveRequestStatus = (LeaveRequestStatusEnum)leaveRequest.LeaveRequestStatusId,
+                NumberOfDays = leaveRequest.EndDate.DayNumber - leaveRequest.StartDate.DayNumber,
+            }).ToList();
+            var model = new EmployeeLeaveRequestListVM
+            {
+                ApprovedRequests = leaveRequests.Count(q => q.LeaveRequestStatusId == (int)LeaveRequestStatusEnum.Approved),
+                PendingRequests = leaveRequests.Count(q => q.LeaveRequestStatusId == (int)LeaveRequestStatusEnum.Pending),
+                RejectedRequests = leaveRequests.Count(q => q.LeaveRequestStatusId == (int)LeaveRequestStatusEnum.Rejected),
+                TotalRequests = leaveRequests.Count,
+                LeaveRequests = leaveRequestModel
+            };
+            return model;
         }
         async Task<List<LeaveReqestReadOnlyVM>> ILeaveRequestService.GetEmployeeLeaveRequests()
         {
@@ -76,9 +97,25 @@ namespace LeaveManagementSystem.Services.LeaveRequests
             return model;
         }
 
-        Task ILeaveRequestService.ReviewLeaveRequest(ReviewLeaveRequestVM model)
+        async Task ILeaveRequestService.ReviewLeaveRequest(int leaveRequestId, bool approved)
         {
-            throw new NotImplementedException();
+            var leaveRequest = _context.LeaveRequests
+                .FirstOrDefault(q => q.LeaveRequestID == leaveRequestId);
+            if (leaveRequest == null)
+            {
+                throw new InvalidOperationException("Leave request not found");
+            }
+            leaveRequest.LeaveRequestStatusId = approved ? (int)LeaveRequestStatusEnum.Approved : (int)LeaveRequestStatusEnum.Rejected;
+            var user = await _userService.GetCurrentUserAsync();
+            leaveRequest.ReviewerId = user?.Id ?? throw new InvalidOperationException("User not found");
+            if (!approved)
+            {
+                var allocationToUpdate = await _context.LeaveAllocations
+                    .FirstAsync(q => q.LeaveTypeID == leaveRequest.LeaveTypeId && q.EmployeeId == leaveRequest.EmployeeId);
+                var numberOfDays = leaveRequest.EndDate.DayNumber - leaveRequest.StartDate.DayNumber;
+                allocationToUpdate.NumberOfDays += numberOfDays;
+            }
+            await _context.SaveChangesAsync();
         }
         public async Task<bool> RequestDatesExceedAllocation(LeaveRequestCreateVM leaveRequestCreateVM)
         {
@@ -87,6 +124,40 @@ namespace LeaveManagementSystem.Services.LeaveRequests
             var allocationToDeduct = await _context.LeaveAllocations
                 .FirstAsync(q => q.LeaveTypeID == leaveRequestCreateVM.LeaveTypeId && q.EmployeeId == user.Id);
             return allocationToDeduct.NumberOfDays < numberOfDays;
+        }
+
+        public Task<ReviewLeaveRequestVM> GetLeaveRequestForReview(int leaveRequestId)
+        {
+            var leaveRequest = _context.LeaveRequests
+                .Include(q => q.LeaveType)
+                .FirstOrDefault(q => q.LeaveRequestID == leaveRequestId);
+            if (leaveRequest == null)
+            {
+                throw new InvalidOperationException("Leave request not found");
+            }
+            var user = _userService.GetUserByID(leaveRequest.EmployeeId).Result;
+            if (user == null)
+            {
+                throw new InvalidOperationException("Logged in user not found");
+            }
+            var model = new ReviewLeaveRequestVM
+            {
+                LeaveRequestID = leaveRequest.LeaveRequestID,
+                StartDate = leaveRequest.StartDate,
+                EndDate = leaveRequest.EndDate,
+                LeaveType = leaveRequest.LeaveType.LeaveTypeName,
+                LeaveRequestStatus = (LeaveRequestStatusEnum)leaveRequest.LeaveRequestStatusId,
+                RequestComments = leaveRequest.RequestComments ?? string.Empty,
+                Employee = new EmployeeListVM
+                {
+                    EmployeeId = leaveRequest.EmployeeId,
+                    Email = user.Email ?? string.Empty,
+                    FirstName = user.FirstName ?? string.Empty,
+                    LastName = user.LastName ?? string.Empty,
+
+                }
+            };
+            return Task.FromResult(model);
         }
     }
 }

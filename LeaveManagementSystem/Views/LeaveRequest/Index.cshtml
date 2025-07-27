@@ -64,13 +64,36 @@
 				<td>
 					@if (item.LeaveRequestStatus == LeaveRequestStatusEnum.Pending)
 					{
-						<form asp-action="Cancel">
-							<input type="hidden" name="leaveRequestId" asp-for="@item.LeaveRequestID" />
-							<input class="btn btn-danger" type="submit" value="Cancel" />
-						</form>
+						<button data-id="@item.LeaveRequestID" class="btn btn-danger cancelBtn">Cancel</button>
 					}
 				</td>
 			</tr>
 		}
 	</tbody>
 </table>
+<form id="cancelForm" asp-action="Cancel">
+	<input type="hidden" name="leaveRequestId" id="LeaveRequestID" />
+</form>
+@section Scripts {
+	<script>
+		$(function () {
+			$('.cancelBtn').click(function (e) {
+				Swal.fire({
+					title: "Are you sure?",
+					text: "You will not be able to recover this request!",
+					icon: "warning",
+					showCancelButton: true,
+					confirmButtonText: "Yes, cancel it!",
+					cancelButtonText: "No, keep it"
+				}).then((result) => {
+					if (result.isConfirmed) {
+						var btn = $(this);
+						var leaveRequestId = btn.data('id');
+						$('#LeaveRequestID').val(leaveRequestId);
+						$('#cancelForm').submit();
+					}
+				});
+			});
+		});
+	</script>
+}

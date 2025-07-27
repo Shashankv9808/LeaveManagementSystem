@@ -1,4 +1,5 @@
 ﻿
+using LeaveManagementSystem.Data;
 using LeaveManagementSystem.Models.LeaveRequests;
 
 namespace LeaveManagementSystem.Services.LeaveRequests
@@ -9,8 +10,8 @@ namespace LeaveManagementSystem.Services.LeaveRequests
         Task<List<LeaveReqestReadOnlyVM>> GetEmployeeLeaveRequests();
         Task<EmployeeLeaveRequestListVM> AdminGetAllLeaveRequests();
         Task CancelLeaveRequest(int leaveRequestId);
-        Task ReviewLeaveRequest(ReviewLeaveRequestVM model);
+        Task ReviewLeaveRequest(int leaveRequestId, bool approved);
         Task<bool> RequestDatesExceedAllocation(LeaveRequestCreateVM leaveRequestCreateVM);
-
+        Task<ReviewLeaveRequestVM> GetLeaveRequestForReview(int leaveRequestId);
     }
 }

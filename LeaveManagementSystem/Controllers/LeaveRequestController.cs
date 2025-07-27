@@ -1,5 +1,4 @@
-﻿using LeaveManagementSystem.Data;
-using LeaveManagementSystem.Models.LeaveRequests;
+﻿using LeaveManagementSystem.Models.LeaveRequests;
 using LeaveManagementSystem.Services.LeaveRequests;
 using LeaveManagementSystem.Services.LeaveTypes;
 using Microsoft.AspNetCore.Authorization;
@@ -61,17 +60,20 @@ namespace LeaveManagementSystem.Controllers
         }
         public async Task<IActionResult> ListRequests()
         {
-            return View();
+            var leaveRequestsModel = await _leaveRequestService.AdminGetAllLeaveRequests();
+            return View(leaveRequestsModel);
         }
         public async Task<IActionResult> Review(int leaveRequestId)
         {
-            return View();
+            var model = await _leaveRequestService.GetLeaveRequestForReview(leaveRequestId);
+            return View(model);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Review()
+        public async Task<IActionResult> Review(int leaveRequestId, bool approved)
         {
-            return View();
+            await _leaveRequestService.ReviewLeaveRequest(leaveRequestId, approved);
+            return RedirectToAction(nameof(ListRequests));
         }
     }
 }
