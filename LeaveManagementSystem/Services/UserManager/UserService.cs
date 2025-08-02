@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System.ComponentModel;
-
 namespace LeaveManagementSystem.Services.UserManager;
 public class UserService : IUserService
 {

@@ -1,5 +1,4 @@
 ﻿using LeaveManagementSystem.Models.LeaveAllocations;
-using LeaveManagementSystem.Models.LeaveRequests;
 
 namespace LeaveManagementSystem.Services.LeaveAllocations
 {
@@ -10,5 +9,6 @@ namespace LeaveManagementSystem.Services.LeaveAllocations
         Task<LeaveAllocationEditVM> GetEmployeeAllocation(int allocationId);
         Task<List<EmployeeListVM>> GetEmployees();
         Task EditAllocation(LeaveAllocationEditVM allocationEditVM);
+        Task<LeaveAllocation> GetCurrentAllocations(int leaveTypeId, string employeeId);
     }
 }

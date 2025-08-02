@@ -76,6 +76,12 @@ else
 					@Html.DisplayNameFor(model => model.LeaveRequests[0].NumberOfDays)
 				</th>
 				<th>
+					Employee Name
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.LeaveRequests[0].Employee.Email)
+				</th>
+				<th>
 					@Html.DisplayNameFor(model => model.LeaveRequests[0].LeaveRequestStatus)
 				</th>
 				<th></th>
@@ -96,6 +102,12 @@ else
 					</td>
 					<td>
 						@Html.DisplayFor(modelItem => item.NumberOfDays)
+					</td>
+					<td>
+						@($"{item.Employee.FirstName} {item.Employee.LastName}")
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Employee.Email)
 					</td>
 					<td>
 						<span class="badge rounded-pill bg-@GetStatusClass(item.LeaveRequestStatus)">@item.LeaveRequestStatus.ToString()</span>

@@ -2,7 +2,9 @@ using LeaveManagementSystem.Services.Email;
 using LeaveManagementSystem.Services.LeaveAllocations;
 using LeaveManagementSystem.Services.LeaveRequests;
 using LeaveManagementSystem.Services.LeaveTypes;
+using LeaveManagementSystem.Services.Periods;
 using LeaveManagementSystem.Services.UserManager;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -17,8 +19,13 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddScoped<ILeaveTypesServices, LeaveTypesServices>();
 builder.Services.AddTransient<ILeaveAllocationsServices, LeaveAllocationsServices>();
 builder.Services.AddScoped<ILeaveRequestService, LeaveRequestService>();
+builder.Services.AddScoped<IPeriodsService, PeriodsService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("AdminSupervisorOnly", policy => 
+        policy.RequireRole(Roles.Administrator, Roles.Supervisor));
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());

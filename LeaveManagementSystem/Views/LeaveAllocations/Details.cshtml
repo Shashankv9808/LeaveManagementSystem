@@ -77,9 +77,7 @@
 								{
 									<a asp-controller="LeaveAllocations" asp-action="EditAllocation" asp-route-id="@item.LeaveAllocationId" class="btn btn-outline-primary btn-sm">Edits</a>
 								}
-								<a asp-controller="LeaveRequest" asp-action="Create" class="btn btn-outline-success btn-sm">
-									Request Leave
-								</a>
+								<a asp-controller="LeaveRequest" asp-action="Create" asp-route-leaveTypeID="@item.LeaveType.ID" class="btn btn-outline-success btn-sm">Request Leave</a>
 							</td>
 						</tr>
 					}

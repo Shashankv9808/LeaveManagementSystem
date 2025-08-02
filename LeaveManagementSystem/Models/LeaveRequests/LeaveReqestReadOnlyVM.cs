@@ -1,4 +1,5 @@
-﻿using LeaveManagementSystem.Services.LeaveRequests;
+﻿using LeaveManagementSystem.Models.LeaveAllocations;
+using LeaveManagementSystem.Services.LeaveRequests;
 using System.ComponentModel;
 
 namespace LeaveManagementSystem.Models.LeaveRequests
@@ -14,6 +15,7 @@ namespace LeaveManagementSystem.Models.LeaveRequests
         public int NumberOfDays { get; set; }
         [DisplayName("Leave Type")]
         public string LeaveType { get; set; } = string.Empty;
+        public EmployeeListVM Employee { get; set; }
         public LeaveRequestStatusEnum LeaveRequestStatus { get; set; }
     }
 }

@@ -41,4 +41,53 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(function () {
+            var today = new Date();
+            var minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+            $("#StartDate").datepicker({
+                dateFormat: 'dd-mm-yy',
+                changeMonth: true,
+                changeYear: true,
+                minDate: minDate
+            });
+            $("#EndDate").datepicker({
+                dateFormat: 'dd-mm-yy',
+                changeMonth: true,
+                changeYear: true,
+                minDate: minDate
+            });
+            $("#anim").on("change", function () {
+                $("#StartDate").datepicker("option", "showAnim", $(this).val());
+            });
+            $("#anim").on("change", function () {
+                $("#EndDate").datepicker("option", "showAnim", $(this).val());
+            });
+            $("#StartDate").on("keydown paste", function(e) {
+                // Allow: tab, shift, ctrl, alt, home, end, left, right, up, down, F5, etc.
+                var allowedKeys = [9, 16, 17, 18, 35, 36, 37, 38, 39, 40, 116];
+                if (
+                    allowedKeys.indexOf(e.keyCode) !== -1 ||
+                    // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                    ((e.ctrlKey || e.metaKey) && [65, 67, 86, 88].indexOf(e.keyCode) !== -1)
+                ) {
+                    return;
+                }
+                e.preventDefault();
+            });
+            $("#EndDate").on("keydown paste", function(e) {
+                // Allow: tab, shift, ctrl, alt, home, end, left, right, up, down, F5, etc.
+                var allowedKeys = [9, 16, 17, 18, 35, 36, 37, 38, 39, 40, 116];
+                if (
+                    allowedKeys.indexOf(e.keyCode) !== -1 ||
+                    // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                    ((e.ctrlKey || e.metaKey) && [65, 67, 86, 88].indexOf(e.keyCode) !== -1)
+                ) {
+                    return;
+                }
+                e.preventDefault();
+			});
+        });
+    </script>
 }

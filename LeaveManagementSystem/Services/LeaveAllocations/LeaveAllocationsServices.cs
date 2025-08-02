@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using LeaveManagementSystem.Models.LeaveAllocations;
-using LeaveManagementSystem.Models.LeaveRequests;
+using LeaveManagementSystem.Services.Periods;
 using LeaveManagementSystem.Services.UserManager;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,12 +11,15 @@ namespace LeaveManagementSystem.Services.LeaveAllocations
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
+        private readonly IPeriodsService _periods;
 
-        public LeaveAllocationsServices(ApplicationDbContext context, IUserService userService, IMapper mapper)
+
+        public LeaveAllocationsServices(ApplicationDbContext context, IUserService userService, IMapper mapper, IPeriodsService periods)
         {
             _context = context;
             _mapper = mapper;
             _userService = userService;
+            _periods = periods;
         }
 
         public async Task AllocationLeave(string employeeId)
@@ -25,7 +28,7 @@ namespace LeaveManagementSystem.Services.LeaveAllocations
                 .Where(q => !q.LeaveAllocations.Any(x=> x.EmployeeId == employeeId))
                 .ToListAsync();
             var currentDate = DateTime.Now;
-            var periods = await _context.Periods.SingleAsync(q => q.EndDate.Year == currentDate.Year);
+            var periods = await _periods.GetCurrentPeriodAsync();
             var monthsRemaining = periods.EndDate.Month - currentDate.Month;
 
             foreach (var leaveType in leaveTypes)
@@ -103,11 +106,11 @@ namespace LeaveManagementSystem.Services.LeaveAllocations
         {
             try
             {
-                var currentDate = DateTime.Now;
+                var periods = await _periods.GetCurrentPeriodAsync();
                 var allocations = await _context.LeaveAllocations
                     .Include(q => q.LeaveType)
                     .Include(q => q.Period)
-                    .Where(q => q.EmployeeId == userId && q.Period != null && q.Period.EndDate.Year == currentDate.Year)
+                    .Where(q => q.EmployeeId == userId && q.PeriodId == periods.PeriodId)
                     .ToListAsync();
 
                 return allocations;
@@ -118,6 +121,20 @@ namespace LeaveManagementSystem.Services.LeaveAllocations
                 return new List<LeaveAllocation>();
             }
         }
-
+        public async Task<LeaveAllocation> GetCurrentAllocations(int leaveTypeId, string employeeId)
+        {
+            try
+            {
+                var periods = await _periods.GetCurrentPeriodAsync();
+                var allocations = await _context.LeaveAllocations.FirstAsync(q => q.LeaveTypeID == leaveTypeId && 
+                    q.EmployeeId == employeeId && 
+                    q.PeriodId == periods.PeriodId);
+                return allocations;
+            }
+            catch (Exception ex)
+            {
+                return new LeaveAllocation();
+            }
+        }
     }
 }

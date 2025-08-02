@@ -28,7 +28,7 @@
                 <span asp-validation-for="Input.LastName" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.DateOfBirth" class="form-control" autocomplete="username" aria-required="true" placeholder="" />
+                <input asp-for="Input.DateOfBirth" type="text" class="form-control" autocomplete="username" aria-required="true" placeholder="" autocomplete="off" />
                 <label asp-for="Input.DateOfBirth">Date Of Birth</label>
                 <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
             </div>
@@ -87,4 +87,33 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(function () {
+            var today = new Date();
+            var maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+			var minDate = new Date(today.getFullYear() - 100, today.getMonth(), today.getDate());
+            $("#Input_DateOfBirth").datepicker({
+                dateFormat: 'dd-mm-yy',
+                changeMonth: true,
+                changeYear: true,
+                maxDate: maxDate,
+                minDate: minDate
+            });
+            $("#anim").on("change", function () {
+                $("#Input_DateOfBirth").datepicker("option", "showAnim", $(this).val());
+            });
+            $("#Input_DateOfBirth").on("keydown paste", function(e) {
+                // Allow: tab, shift, ctrl, alt, home, end, left, right, up, down, F5, etc.
+                var allowedKeys = [9, 16, 17, 18, 35, 36, 37, 38, 39, 40, 116];
+                if (
+                    allowedKeys.indexOf(e.keyCode) !== -1 ||
+                    // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                    ((e.ctrlKey || e.metaKey) && [65, 67, 86, 88].indexOf(e.keyCode) !== -1)
+                ) {
+                    return;
+                }
+                e.preventDefault();
+            });
+        });
+    </script>
 }

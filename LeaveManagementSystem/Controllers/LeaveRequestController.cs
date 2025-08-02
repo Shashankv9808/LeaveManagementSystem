@@ -14,10 +14,10 @@ namespace LeaveManagementSystem.Controllers
             var leaveRequests = await _leaveRequestService.GetEmployeeLeaveRequests();
             return View(leaveRequests);
         }
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int leaveTypeID)
         {
             var leaveTypes = await _leaveTypesServices.GetAllAsync();
-            var leaveTypesSelectList = new SelectList(leaveTypes, "ID", "Name");
+            var leaveTypesSelectList = new SelectList(leaveTypes, "ID", "Name", leaveTypeID);
             var leaveRequestCreateVM = new LeaveRequestCreateVM
             {
                 StartDate = DateOnly.FromDateTime(DateTime.Now),
@@ -58,6 +58,7 @@ namespace LeaveManagementSystem.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+        [Authorize(Policy = "AdminSupervisorOnly")]
         public async Task<IActionResult> ListRequests()
         {
             var leaveRequestsModel = await _leaveRequestService.AdminGetAllLeaveRequests();

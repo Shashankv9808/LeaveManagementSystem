@@ -1,6 +1,4 @@
-﻿
-using LeaveManagementSystem.Data;
-using LeaveManagementSystem.Models.LeaveRequests;
+﻿using LeaveManagementSystem.Models.LeaveRequests;
 
 namespace LeaveManagementSystem.Services.LeaveRequests
 {
