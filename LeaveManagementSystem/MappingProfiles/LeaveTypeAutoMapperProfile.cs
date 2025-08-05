@@ -3,7 +3,7 @@ using LeaveManagementSystem.Models.LeaveTypes;
 
 namespace LeaveManagementSystem.MappingProfiles
 {
-    public class LeaveTypeAutoMapperProfile :Profile
+    public class LeaveTypeAutoMapperProfile : Profile
     {
         public LeaveTypeAutoMapperProfile()
         {

@@ -8,7 +8,7 @@ namespace LeaveManagementSystem.MappingProfiles
         public LeaveRequestAutoMapperProfile()
         {
             CreateMap<LeaveRequestCreateVM, LeaveRequest>();
-                
+
         }
     }
 }

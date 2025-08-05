@@ -25,7 +25,7 @@ namespace LeaveManagementSystem.Services.LeaveAllocations
         public async Task AllocationLeave(string employeeId)
         {
             var leaveTypes = await _context.LeaveTypes
-                .Where(q => !q.LeaveAllocations.Any(x=> x.EmployeeId == employeeId))
+                .Where(q => !q.LeaveAllocations.Any(x => x.EmployeeId == employeeId))
                 .ToListAsync();
             var currentDate = DateTime.Now;
             var periods = await _periods.GetCurrentPeriodAsync();
@@ -126,8 +126,8 @@ namespace LeaveManagementSystem.Services.LeaveAllocations
             try
             {
                 var periods = await _periods.GetCurrentPeriodAsync();
-                var allocations = await _context.LeaveAllocations.FirstAsync(q => q.LeaveTypeID == leaveTypeId && 
-                    q.EmployeeId == employeeId && 
+                var allocations = await _context.LeaveAllocations.FirstAsync(q => q.LeaveTypeID == leaveTypeId &&
+                    q.EmployeeId == employeeId &&
                     q.PeriodId == periods.PeriodId);
                 return allocations;
             }

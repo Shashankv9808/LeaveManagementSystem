@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace LeaveManagementSystem.Models.LeaveTypes
+﻿namespace LeaveManagementSystem.Models.LeaveTypes
 {
     public class LeaveTypeEditVM
     {

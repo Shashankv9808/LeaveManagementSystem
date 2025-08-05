@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LeaveManagementSystem.Configuration
 {
-    public class IdentityRoleConfiguration :IEntityTypeConfiguration<IdentityRole>
+    public class IdentityRoleConfiguration : IEntityTypeConfiguration<IdentityRole>
     {
         public void Configure(EntityTypeBuilder<IdentityRole> builder)
         {

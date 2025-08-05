@@ -21,7 +21,7 @@ namespace LeaveManagementSystem.Models.LeaveRequests
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if(StartDate > EndDate)
+            if (StartDate > EndDate)
             {
                 yield return new ValidationResult("Start date cannot be after end date.", [nameof(StartDate), nameof(EndDate)]);
             }

@@ -10,7 +10,7 @@ namespace LeaveManagementSystem.Controllers
     {
         private readonly ILeaveAllocationsServices _leaveAllocationsServices;
         private readonly ILeaveTypesServices _leaveTypesServices;
-        public LeaveAllocationsController(ILeaveAllocationsServices leaveAllocationsServices,ILeaveTypesServices leaveTypesServices)
+        public LeaveAllocationsController(ILeaveAllocationsServices leaveAllocationsServices, ILeaveTypesServices leaveTypesServices)
         {
             _leaveAllocationsServices = leaveAllocationsServices;
             _leaveTypesServices = leaveTypesServices;
@@ -32,14 +32,14 @@ namespace LeaveManagementSystem.Controllers
                 return BadRequest("User ID cannot be null or empty.");
 
             await _leaveAllocationsServices.AllocationLeave(EmployeeId);
-            return RedirectToAction(nameof(Details), new {userId = EmployeeId });
+            return RedirectToAction(nameof(Details), new { userId = EmployeeId });
         }
         [Authorize(Roles = Roles.Administrator)]
         public async Task<IActionResult> EditAllocation(int? id)
         {
             if (id == null)
                 return NotFound();
-                var leaveAllocation = await _leaveAllocationsServices.GetEmployeeAllocation(id.Value);
+            var leaveAllocation = await _leaveAllocationsServices.GetEmployeeAllocation(id.Value);
             if (leaveAllocation == null)
                 return NotFound();
             return View(leaveAllocation);
@@ -50,11 +50,11 @@ namespace LeaveManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAllocation(LeaveAllocationEditVM allocation)
         {
-            if(await _leaveTypesServices.DaysExceedMaximum(allocation.LeaveType.ID, allocation.NumberOfDays))
+            if (await _leaveTypesServices.DaysExceedMaximum(allocation.LeaveType.ID, allocation.NumberOfDays))
             {
                 ModelState.AddModelError("NumberOfDays", "The number of days exceeds the maximum allowed for this leave type.");
             }
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 await _leaveAllocationsServices.EditAllocation(allocation);
                 return RedirectToAction(nameof(Details), new { userId = allocation.Employee.EmployeeId });

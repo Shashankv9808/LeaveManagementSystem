@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Build.Framework;
-
-namespace LeaveManagementSystem.Data
+﻿namespace LeaveManagementSystem.Data
 {
     public class ApplicationUser : IdentityUser
     {

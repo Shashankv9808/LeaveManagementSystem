@@ -4,8 +4,8 @@ using LeaveManagementSystem.Services.LeaveRequests;
 using LeaveManagementSystem.Services.LeaveTypes;
 using LeaveManagementSystem.Services.Periods;
 using LeaveManagementSystem.Services.UserManager;
-using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,13 +24,25 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 builder.Services.AddAuthorizationBuilder()
-    .AddPolicy("AdminSupervisorOnly", policy => 
+    .AddPolicy("AdminSupervisorOnly", policy =>
         policy.RequireRole(Roles.Administrator, Roles.Supervisor));
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.WriteTo.Console()
+        .ReadFrom.Configuration(context.Configuration)
+        .Enrich.FromLogContext();
+});
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+    options.User.RequireUniqueEmail = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+})
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();

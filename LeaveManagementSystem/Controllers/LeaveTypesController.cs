@@ -6,19 +6,13 @@ using Microsoft.EntityFrameworkCore;
 namespace LeaveManagementSystem.Controllers
 {
     [Authorize(Roles = Roles.Administrator)]
-    public class LeaveTypesController : Controller
+    public class LeaveTypesController(ILeaveTypesServices _leaveTypesServices, ILogger<LeaveTypesController> _logger) : Controller
     {
-        private readonly ILeaveTypesServices _leaveTypesServices;
-
-        public LeaveTypesController(ILeaveTypesServices leaveTypesServices)
-        {
-            _leaveTypesServices = leaveTypesServices;
-        }
 
         // GET: LeaveTypes
         public async Task<IActionResult> Index()
         {
-
+            _logger.LogInformation("Index action called at {Time}", DateTime.UtcNow);
             return View(await _leaveTypesServices.GetAllAsync());
         }
 
@@ -32,6 +26,7 @@ namespace LeaveManagementSystem.Controllers
             var leaveType = await _leaveTypesServices.GetT<LeaveTypeReadOnlyVM>(id.Value);
             if (id == null)
             {
+                _logger.LogWarning("LeaveType with ID {Id} not found", id);
                 return NotFound();
             }
             return View(leaveType);
@@ -50,8 +45,10 @@ namespace LeaveManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(LeaveTypeCreateVM leaveTypeVM)
         {
+            _logger.LogInformation("Create action called at {Time} with LeaveType: {@LeaveType}", DateTime.UtcNow, leaveTypeVM);
             if (await _leaveTypesServices.CheckIfLeaveTypeNameExists(leaveTypeVM.Name))
             {
+                _logger.LogWarning("Leave Type Name {Name} already exists", leaveTypeVM.Name);
                 ModelState.AddModelError(nameof(leaveTypeVM.Name), "Leave Type Name already exists");
             }
             if (ModelState.IsValid)
@@ -59,6 +56,7 @@ namespace LeaveManagementSystem.Controllers
                 await _leaveTypesServices.Create(leaveTypeVM);
                 return RedirectToAction(nameof(Index));
             }
+            _logger.LogError("ModelState is invalid for LeaveType: {@LeaveType}", leaveTypeVM);
             return View(leaveTypeVM);
         }
 

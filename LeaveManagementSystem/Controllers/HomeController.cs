@@ -1,5 +1,5 @@
-using System.Diagnostics;
 using LeaveManagementSystem.Models;
+using System.Diagnostics;
 
 namespace LeaveManagementSystem.Controllers
 {
@@ -14,6 +14,7 @@ namespace LeaveManagementSystem.Controllers
 
         public IActionResult Index()
         {
+            _logger.LogInformation("Index action called at {Time}", DateTime.UtcNow);
             return View();
         }
 

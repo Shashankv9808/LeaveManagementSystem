@@ -11,6 +11,6 @@
         [Display(Name = "Rejected Requests")]
         public int RejectedRequests { get; set; }
         public List<LeaveReqestReadOnlyVM> LeaveRequests { get; set; } = [];
-        
+
     }
 }

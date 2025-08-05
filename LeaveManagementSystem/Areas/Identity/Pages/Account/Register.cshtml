@@ -1,119 +1,92 @@
 ﻿@page
 @model RegisterModel
-@{
-    ViewData["Title"] = "Register";
-}
 
-<h1>@ViewData["Title"]</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.FirstName" class="form-control" autocomplete="username" aria-required="true" placeholder="Shashank" />
-                <label asp-for="Input.FirstName">First Name</label>
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.LastName" class="form-control" autocomplete="username" aria-required="true" placeholder="V" />
-                <label asp-for="Input.LastName">Last Name</label>
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.DateOfBirth" type="text" class="form-control" autocomplete="username" aria-required="true" placeholder="" autocomplete="off" />
-                <label asp-for="Input.DateOfBirth">Date Of Birth</label>
-                <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-			@foreach (var role in Model.RoleNames)
-			{
-				<div class="form-check mb-3">
-					<input class="form-check-input" type="radio" asp-for="Input.RoleName" value="@role" id="@role"/>
-                    <label class="form-check-label" for="flexRadioDefault1">@role</label>
+<div class="d-flex align-items-center justify-content-center w-100">
+	<div class="row justify-content-center w-100">
+		<div class="col-md-16 col-lg-12 col-xxl-6">
+			<div class="card mb-0">
+				<div class="card-body">
+					<form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+						<h2>Create a new account.</h2>
+						<hr />
+						<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+						<div class="mb-3">
+							<label asp-for="Input.Email" class="form-label">Email Address</label>
+							<input asp-for="Input.Email" class="form-control" aria-describedby="emailHelp" autocomplete="username" aria-required="true" placeholder="name@example.com">
+						</div>
+						<div class="mb-3">
+							<label asp-for="Input.FirstName" class="form-label">First Name</label>
+							<input asp-for="Input.FirstName" class="form-control" aria-describedby="textHelp" autocomplete="username" aria-required="true" placeholder="Shashank">
+						</div>
+						<div class="mb-3">
+							<label asp-for="Input.LastName" class="form-label">Last Name</label>
+							<input asp-for="Input.LastName" class="form-control" aria-describedby="textHelp" autocomplete="username" aria-required="true" placeholder="V">
+						</div>
+						<div class="mb-3">
+							<input asp-for="Input.DateOfBirth" type="text" class="form-control" autocomplete="username" aria-required="true" placeholder="" autocomplete="off" />
+							<label asp-for="Input.DateOfBirth" class="form-label">Date Of Birth</label>
+						</div>
+						<div class="mb-3">
+							<input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+							<label asp-for="Input.Password" class="form-label">Password</label>
+						</div>
+						<div class="mb-3">
+							<input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+							<label asp-for="Input.ConfirmPassword" class="form-label">Confirm Password</label>
+						</div>
+						@foreach (var role in Model.RoleNames)
+						{
+							<div class="form-check mb-3">
+								<input class="form-check-input" type="radio" asp-for="Input.RoleName" value="@role" id="@role" />
+								<label class="form-check-label" for="flexRadioDefault1">@role</label>
+							</div>
+						}
+						<button id="registerSubmit" type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4">
+							Register
+						</button>
+						<div class="d-flex align-items-center justify-content-center">
+							<p class="fs-4 mb-0 fw-bold">Already have an Account?</p>
+							<a class="text-primary fw-bold ms-2" asp-page="./Login">Log In</a>
+						</div>
+					</form>
 				</div>
-			}
-			<span asp-validation-for="Input.RoleName" class="text-danger"></span>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
-    </div>
-   @*  <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
-    </div> *@
+			</div>
+		</div>
+	</div>
 </div>
 
+
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script>
-        $(function () {
-            var today = new Date();
-            var maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+	<partial name="_ValidationScriptsPartial" />
+	<script>
+		$(function () {
+			var today = new Date();
+			var maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 			var minDate = new Date(today.getFullYear() - 100, today.getMonth(), today.getDate());
-            $("#Input_DateOfBirth").datepicker({
-                dateFormat: 'dd-mm-yy',
-                changeMonth: true,
-                changeYear: true,
-                maxDate: maxDate,
-                minDate: minDate
-            });
-            $("#anim").on("change", function () {
-                $("#Input_DateOfBirth").datepicker("option", "showAnim", $(this).val());
-            });
-            $("#Input_DateOfBirth").on("keydown paste", function(e) {
-                // Allow: tab, shift, ctrl, alt, home, end, left, right, up, down, F5, etc.
-                var allowedKeys = [9, 16, 17, 18, 35, 36, 37, 38, 39, 40, 116];
-                if (
-                    allowedKeys.indexOf(e.keyCode) !== -1 ||
-                    // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
-                    ((e.ctrlKey || e.metaKey) && [65, 67, 86, 88].indexOf(e.keyCode) !== -1)
-                ) {
-                    return;
-                }
-                e.preventDefault();
-            });
-        });
-    </script>
+			$("#Input_DateOfBirth").datepicker({
+				dateFormat: 'dd-mm-yy',
+				changeMonth: true,
+				changeYear: true,
+				maxDate: maxDate,
+				minDate: minDate
+			});
+			$("#anim").on("change", function () {
+				$("#Input_DateOfBirth").datepicker("option", "showAnim", $(this).val());
+			});
+			$("#Input_DateOfBirth").on("keydown paste", function(e) {
+				// Allow: tab, shift, ctrl, alt, home, end, left, right, up, down, F5, etc.
+				var allowedKeys = [9, 16, 17, 18, 35, 36, 37, 38, 39, 40, 116];
+				if (
+					allowedKeys.indexOf(e.keyCode) !== -1 ||
+					// Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+					((e.ctrlKey || e.metaKey) && [65, 67, 86, 88].indexOf(e.keyCode) !== -1)
+				) {
+					return;
+				}
+				e.preventDefault();
+			});
+		});
+	</script>
 }

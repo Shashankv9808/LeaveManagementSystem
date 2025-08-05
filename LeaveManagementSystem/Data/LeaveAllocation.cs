@@ -3,7 +3,7 @@
     public class LeaveAllocation : BaseEntity
     {
         [Key]
-        public int LeaveAllocationId {  get; set; }
+        public int LeaveAllocationId { get; set; }
         public LeaveType? LeaveType { get; set; }
         public int LeaveTypeID { get; set; }
         public ApplicationUser? Employee { get; set; }

@@ -3,7 +3,6 @@
 #nullable disable
 
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace LeaveManagementSystem.Areas.Identity.Pages.Account
 {
